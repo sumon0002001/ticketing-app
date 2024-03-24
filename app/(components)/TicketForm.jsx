@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const TicketForm = ({ ticket }) => {
+  const router = useRouter();
   const startingTicketData = {
     title: "",
     description: "",
@@ -12,8 +13,30 @@ const TicketForm = ({ ticket }) => {
     category: "Hardware Problem",
   };
   const [formData, setFormData] = useState(startingTicketData);
-  const handleSubmit = () => {};
-  const handleChange = () => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const res = await fetch("/api/Tickets", {
+      method: "POST",
+      body: JSON.stringify({ formData }),
+
+      "Content-Type": "application/json",
+    });
+    if (!res.ok) {
+      console.error("Error creating ticket");
+    }
+    router.refresh();
+    router.push("/");
+  };
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    const name = e.target.name;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
   return (
     <div className="flex justify-center">
       <form
@@ -29,6 +52,7 @@ const TicketForm = ({ ticket }) => {
           id="title"
           onChange={handleChange}
           required={true}
+          value={formData.title}
         />
         <label>Description</label>
         <textarea
@@ -36,13 +60,13 @@ const TicketForm = ({ ticket }) => {
           name="description"
           onChange={handleChange}
           required={true}
-          // value={formData.description}
+          value={formData.description}
           rows="5"
         />
         <label>Category</label>
         <select
           name="category"
-          // value={formData.category}
+          value={formData.category}
           onChange={handleChange}
         >
           {/* {categories?.map((category, _index) => (
@@ -50,6 +74,8 @@ const TicketForm = ({ ticket }) => {
               {category}
             </option>
           ))} */}
+          <option value="">hello heloo</option>
+          <option value="">hello heloo</option>
           <option value="">hello heloo</option>
         </select>
         <label>Priority</label>
@@ -59,8 +85,8 @@ const TicketForm = ({ ticket }) => {
             name="priority"
             type="radio"
             onChange={handleChange}
-            //  value={1}
-            //  checked={formData.priority == 1}
+            value={1}
+            checked={formData.priority == 1}
           />
           <label>1</label>
           <input
@@ -68,8 +94,8 @@ const TicketForm = ({ ticket }) => {
             name="priority"
             type="radio"
             onChange={handleChange}
-            // value={2}
-            // checked={formData.priority == 2}
+            value={2}
+            checked={formData.priority == 2}
           />
           <label>2</label>
           <input
@@ -77,8 +103,8 @@ const TicketForm = ({ ticket }) => {
             name="priority"
             type="radio"
             onChange={handleChange}
-            // value={2}
-            // checked={formData.priority == 2}
+            value={3}
+            checked={formData.priority == 3}
           />
           <label>3</label>
           <input
@@ -86,8 +112,8 @@ const TicketForm = ({ ticket }) => {
             name="priority"
             type="radio"
             onChange={handleChange}
-            // value={2}
-            // checked={formData.priority == 2}
+            value={4}
+            checked={formData.priority == 4}
           />
           <label>4</label>
           <input
@@ -95,8 +121,8 @@ const TicketForm = ({ ticket }) => {
             name="priority"
             type="radio"
             onChange={handleChange}
-            // value={2}
-            // checked={formData.priority == 2}
+            value={5}
+            checked={formData.priority == 5}
           />
           <label>5</label>
         </div>
@@ -105,7 +131,7 @@ const TicketForm = ({ ticket }) => {
           type="range"
           id="progress"
           name="progress"
-          // value={formData.progress}
+          value={formData.progress}
           min="0"
           max="100"
           onChange={handleChange}
